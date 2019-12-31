@@ -42,12 +42,26 @@ public class GameManager : MonoBehaviour
         {
             return;
         }
+        // Drop in specified increments
         if (Time.time > m_timeToDrop)
         {
             m_timeToDrop = Time.time + m_dropInterval;
             if (m_activeShape)
             {
                 m_activeShape.MoveDown();
+
+                // Validate the shape's position within board
+                if (!m_gameBoard.IsValidPosition(m_activeShape))
+                {
+                    // Shape stops at floor
+                    m_activeShape.MoveUp();
+
+                    // Spawn a new shape
+                    if (m_spawner)
+                    {
+                        m_activeShape = m_spawner.SpawnShape();
+                    }
+                 }
             }
         }
     }
