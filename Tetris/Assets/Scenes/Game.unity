@@ -569,6 +569,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c12be334b6bea5b4b970c54eb72749b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_allShapes:
+  - {fileID: 1098767137225840928, guid: 0de2de288559cfd44af37ddd496e5c28, type: 3}
+  - {fileID: 4685146898996983850, guid: 78cabd1cc8ea04c4db3889cae6a174d2, type: 3}
+  - {fileID: 7301485717119853435, guid: bf2aae348a144d641ac0719c9a773e51, type: 3}
+  - {fileID: 640361516603886777, guid: 30a68ba795437ba4b8779d9ef5edc355, type: 3}
+  - {fileID: 8724844902495301991, guid: 5cf78c28548ba824cadb54e6aba12dbc, type: 3}
+  - {fileID: 7045507390615511799, guid: a05453cc16cd1284ba25dd22ce118ad7, type: 3}
+  - {fileID: 8722824545204317134, guid: fac080723aa0d9c49908f07c2ec8ace2, type: 3}
 --- !u!4 &482180496
 Transform:
   m_ObjectHideFlags: 0
@@ -577,7 +585,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 482180494}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 4, y: 25, z: -1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
