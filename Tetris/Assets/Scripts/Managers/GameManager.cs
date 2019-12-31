@@ -53,8 +53,9 @@ public class GameManager : MonoBehaviour
                 // Validate the shape's position within board
                 if (!m_gameBoard.IsValidPosition(m_activeShape))
                 {
-                    // Shape stops at floor
+                    // Shape lands and registers in grid
                     m_activeShape.MoveUp();
+                    m_gameBoard.StoreShapeInGrid(m_activeShape);
 
                     // Spawn a new shape
                     if (m_spawner)
