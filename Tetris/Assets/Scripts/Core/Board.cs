@@ -46,7 +46,7 @@ public class Board : MonoBehaviour
         }
         else
         {
-            Debug.Log("The emptySprite object is empty!");
+            Debug.LogWarning("WARN: The emptySprite object is empty!");
         }
     }
 }
