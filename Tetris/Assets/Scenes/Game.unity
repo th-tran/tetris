@@ -1557,6 +1557,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b80ed88a0cfb294d938f97b986555d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_keyRepeatRateLeftRight: 0.15
+  m_keyRepeatRateDown: 0.02
 --- !u!4 &1762860121
 Transform:
   m_ObjectHideFlags: 0

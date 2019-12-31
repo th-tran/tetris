@@ -7,11 +7,11 @@ public class GameManager : MonoBehaviour
     Board m_gameBoard;
     Spawner m_spawner;
     Shape m_activeShape;
-    float m_dropInterval = 0.5f;
+    float m_dropInterval = 0.2f;
     float m_timeToDrop;
     float m_timeToNextKeyLeftRight;
     [Range(0.02f, 1f)]
-    public float m_keyRepeatRateLeftRight = 0.15f;
+    public float m_keyRepeatRateLeftRight = 0.25f;
     float m_timeToNextKeyDown;
     [Range(0.01f, 1f)]
     public float m_keyRepeatRateDown = 0.02f;
@@ -102,8 +102,13 @@ public class GameManager : MonoBehaviour
         // No input delay after shape lands
         m_timeToNextKeyLeftRight = Time.time;
         m_timeToNextKeyDown = Time.time;
+
+        // Land the shape
         m_activeShape.MoveUp();
         m_gameBoard.StoreShapeInGrid(m_activeShape);
         m_activeShape = m_spawner.SpawnShape();
+
+        // Clear rows (if any)
+        m_gameBoard.ClearAllRows();
     }
 }
