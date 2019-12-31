@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -15,6 +16,8 @@ public class GameManager : MonoBehaviour
     float m_timeToNextKeyDown;
     [Range(0.01f, 1f)]
     public float m_keyRepeatRateDown = 0.02f;
+    bool m_gameOver = false;
+    public GameObject m_gameOverPanel;
 
     // Start is called before the first frame update
     void Start()
@@ -43,12 +46,17 @@ public class GameManager : MonoBehaviour
                 m_activeShape = m_spawner.SpawnShape();
             }
         }
+
+        if (m_gameOverPanel)
+        {
+            m_gameOverPanel.SetActive(false);
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!m_gameBoard || !m_spawner || !m_activeShape)
+        if (!m_gameBoard || !m_spawner || !m_activeShape || m_gameOver)
         {
             return;
         }
@@ -92,7 +100,14 @@ public class GameManager : MonoBehaviour
             // Validate the shape's position within board
             if (!m_gameBoard.IsValidPosition(m_activeShape))
             {
-                LandShape();
+                if (m_gameBoard.IsOverLimit(m_activeShape))
+                {
+                    GameOver();
+                }
+                else
+                {
+                    LandShape();
+                }
             }
         }
     }
@@ -110,5 +125,21 @@ public class GameManager : MonoBehaviour
 
         // Clear rows (if any)
         m_gameBoard.ClearAllRows();
+    }
+
+    void GameOver()
+    {
+        m_activeShape.MoveUp();
+        m_gameOver = true;
+
+        if (m_gameOverPanel)
+        {
+            m_gameOverPanel.SetActive(true);
+        }
+    }
+
+    public void Restart()
+    {
+        SceneManager.LoadScene("Game");
     }
 }
