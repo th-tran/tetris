@@ -6,6 +6,9 @@ public class GameManager : MonoBehaviour
 {
     Board m_gameBoard;
     Spawner m_spawner;
+    Shape m_activeShape;
+    float m_dropInterval = 0.25f;
+    float m_timeToDrop;
 
     // Start is called before the first frame update
     void Start()
@@ -22,11 +25,30 @@ public class GameManager : MonoBehaviour
         {
             Debug.LogWarning("WARN: There is no spawner defined!");
         }
+        else
+        {
+            m_spawner.transform.position = Vector3Int.RoundToInt(m_spawner.transform.position);
+            if (m_activeShape == null)
+            {
+                m_activeShape = m_spawner.SpawnShape();
+            }
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        if (!m_gameBoard || !m_spawner)
+        {
+            return;
+        }
+        if (Time.time > m_timeToDrop)
+        {
+            m_timeToDrop = Time.time + m_dropInterval;
+            if (m_activeShape)
+            {
+                m_activeShape.MoveDown();
+            }
+        }
     }
 }
