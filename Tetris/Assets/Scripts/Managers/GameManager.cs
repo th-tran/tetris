@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
     Board m_gameBoard;
     Spawner m_spawner;
     Shape m_activeShape;
+    Ghost m_ghost;
     SoundManager m_soundManager;
     ScoreManager m_scoreManager;
     float m_dropInterval = 0.5f;
@@ -38,6 +39,7 @@ public class GameManager : MonoBehaviour
         m_spawner = GameObject.FindWithTag("Spawner").GetComponent<Spawner>();
         m_soundManager = GameObject.FindWithTag("SoundManager").GetComponent<SoundManager>();
         m_scoreManager = GameObject.FindWithTag("ScoreManager").GetComponent<ScoreManager>();
+        m_ghost = GameObject.FindWithTag("Ghost").GetComponent<Ghost>();
 
         if (!m_gameBoard)
         {
@@ -93,9 +95,17 @@ public class GameManager : MonoBehaviour
         PlayerInput();
     }
 
+    void LateUpdate()
+    {
+        if (m_ghost)
+        {
+            m_ghost.DrawGhost(m_activeShape, m_gameBoard);
+        }
+    }
+
     void PlayerInput()
     {
-        if (Input.GetButton("MoveRight") && (Time.time > m_timeToNextKeyLeftRight) || Input.GetButtonDown("MoveRight"))
+        if ((Input.GetButton("MoveRight") && (Time.time > m_timeToNextKeyLeftRight)) || Input.GetButtonDown("MoveRight"))
         {
             m_timeToNextKeyLeftRight = Time.time + m_keyRepeatRateLeftRight;
             m_activeShape.MoveRight();
@@ -109,7 +119,7 @@ public class GameManager : MonoBehaviour
                 PlaySound(m_soundManager.m_moveSound, 0.5f);
             }
         }
-        else if (Input.GetButton("MoveLeft") && (Time.time > m_timeToNextKeyLeftRight) || Input.GetButtonDown("MoveLeft"))
+        else if ((Input.GetButton("MoveLeft") && (Time.time > m_timeToNextKeyLeftRight)) || Input.GetButtonDown("MoveLeft"))
         {
             m_timeToNextKeyLeftRight = Time.time + m_keyRepeatRateLeftRight;
             m_activeShape.MoveLeft();
@@ -136,7 +146,7 @@ public class GameManager : MonoBehaviour
                 PlaySound(m_soundManager.m_rotateSound, 0.5f);
             }
         }
-        else if (Input.GetButton("MoveDown") && (Time.time > m_timeToNextKeyDown) || (Time.time > m_timeToDrop))
+        else if ((Input.GetButton("MoveDown") && (Time.time > m_timeToNextKeyDown)) || (Time.time > m_timeToDrop))
         {
             m_timeToNextKeyDown = Time.time + m_keyRepeatRateDown;
             m_timeToDrop = Time.time + m_dropIntervalModded;
@@ -174,6 +184,12 @@ public class GameManager : MonoBehaviour
         // Land the shape
         m_activeShape.MoveUp();
         m_gameBoard.StoreShapeInGrid(m_activeShape);
+
+        // Reset the ghost shape before spawning a new shape
+        if (m_ghost)
+        {
+            m_ghost.Reset();
+        }
         m_activeShape = m_spawner.SpawnShape();
 
         // Play sound FX for shape landing
