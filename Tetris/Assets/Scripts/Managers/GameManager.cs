@@ -19,6 +19,8 @@ public class GameManager : MonoBehaviour
     public float m_keyRepeatRateDown = 0.02f;
     bool m_gameOver = false;
     public GameObject m_gameOverPanel;
+    public IconToggle m_rotIconToggle;
+    bool m_clockwise = true;
 
     // Start is called before the first frame update
     void Start()
@@ -102,10 +104,10 @@ public class GameManager : MonoBehaviour
         }
         else if (Input.GetButtonDown("Rotate") && m_activeShape.m_canRotate)
         {
-            m_activeShape.RotateRight();
+            m_activeShape.RotateClockwise(m_clockwise);
             if (!m_gameBoard.IsValidPosition(m_activeShape))
             {
-                m_activeShape.RotateLeft();
+                m_activeShape.RotateClockwise(!m_clockwise);
                 PlaySound(m_soundManager.m_errorSound, 0.5f);
             }
             else
@@ -131,6 +133,10 @@ public class GameManager : MonoBehaviour
                     LandShape();
                 }
             }
+        }
+        else if (Input.GetButtonDown("ToggleRot"))
+        {
+            ToggleRotDirection();
         }
     }
 
@@ -194,6 +200,15 @@ public class GameManager : MonoBehaviour
         if (clip && m_soundManager.m_fxEnabled)
         {
             AudioSource.PlayClipAtPoint(clip, Camera.main.transform.position, m_soundManager.m_fxVolume * volMultiplier);
+        }
+    }
+
+    public void ToggleRotDirection()
+    {
+        m_clockwise = !m_clockwise;
+        if (m_rotIconToggle)
+        {
+            m_rotIconToggle.ToggleIcon(m_clockwise);
         }
     }
 }
