@@ -1,8 +1,5 @@
-# Tetris
 
-This is one of my current projects - a faithful recreation of the arcade game "Tetris"!
-
-## Dev log
+# Dev log
 
 ### 2019-21-29
 
@@ -36,3 +33,18 @@ I extended the previous classes to implement all the fun Tetris logic :)
 *Other:*
 - Created a game over splash screen that appears when the player loses
 - Added a functional restart button on the game over screen so the player can try again
+
+---
+
+### 2019-21-31
+
+Sound day! (and a bit of UI too)
+
+*Functional:*
+- Created SoundManager class to handle all the sounds and music in the game
+- Made parts of the UI dealing with sounds/gameplay functional
+- Implemented pause, resume and restart
+
+*Other:*
+- Added music and sounds that play on various conditions to make the game more alive
+- Added a screen fade in/out effect on game start for visual flair
