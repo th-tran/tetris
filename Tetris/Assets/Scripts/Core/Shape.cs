@@ -5,6 +5,7 @@ using UnityEngine;
 public class Shape : MonoBehaviour
 {
     public bool m_canRotate = true;
+    public Vector3 m_queueOffset;
 
     // Start is called before the first frame update
     void Start()
