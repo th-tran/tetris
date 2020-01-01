@@ -12,12 +12,18 @@ public class SoundManager : MonoBehaviour
     public float m_fxVolume = 1.0f;
     public AudioClip m_clearRowSound;
     public AudioClip m_moveSound;
+    public AudioClip m_rotateSound;
     public AudioClip m_dropSound;
     public AudioClip m_gameOverSound;
+    public AudioClip m_errorSound;
     public AudioSource m_musicSource;
     // List of background music tracks
     public AudioClip[] m_musicClips;
     AudioClip m_backgroundMusic;
+    // List of vocals
+    public AudioClip[] m_doubleVocalClips;
+    public AudioClip[] m_tripleVocalClips;
+    public AudioClip m_tetrisVocalClip;
 
     // Start is called before the first frame update
     void Start()
@@ -81,5 +87,10 @@ public class SoundManager : MonoBehaviour
     {
         m_musicEnabled = !m_musicEnabled;
         UpdateMusic();
+    }
+
+    public void ToggleFX()
+    {
+        m_fxEnabled = !m_fxEnabled;
     }
 }

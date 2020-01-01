@@ -11,6 +11,8 @@ public class Board : MonoBehaviour
 
     Transform[,] m_grid;
 
+    public int m_completedRows = 0;
+
     void Awake()
     {
         m_grid = new Transform[m_width,m_height];
@@ -138,10 +140,12 @@ public class Board : MonoBehaviour
 
     public void ClearAllRows()
     {
+        m_completedRows = 0;
         for (int y = 0; y < m_height; y++)
         {
             if (IsComplete(y))
             {
+                m_completedRows++;
                 ClearRow(y);
                 ShiftRowsDown(y+1);
                 // Check the same row again,
