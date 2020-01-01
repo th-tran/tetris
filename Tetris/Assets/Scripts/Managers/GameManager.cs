@@ -9,7 +9,9 @@ public class GameManager : MonoBehaviour
     Spawner m_spawner;
     Shape m_activeShape;
     SoundManager m_soundManager;
-    float m_dropInterval = 0.2f;
+    ScoreManager m_scoreManager;
+    float m_dropInterval = 0.5f;
+    float m_dropIntervalModded;
     float m_timeToDrop;
     float m_timeToNextKeyLeftRight;
     [Range(0.02f, 1f)]
@@ -30,10 +32,12 @@ public class GameManager : MonoBehaviour
         m_timeToDrop = Time.time;
         m_timeToNextKeyLeftRight = Time.time + m_keyRepeatRateLeftRight;
         m_timeToNextKeyDown = Time.time + m_keyRepeatRateDown;
+        m_dropIntervalModded = m_dropInterval;
 
         m_gameBoard = GameObject.FindWithTag("Board").GetComponent<Board>();
         m_spawner = GameObject.FindWithTag("Spawner").GetComponent<Spawner>();
         m_soundManager = GameObject.FindWithTag("SoundManager").GetComponent<SoundManager>();
+        m_scoreManager = GameObject.FindWithTag("ScoreManager").GetComponent<ScoreManager>();
 
         if (!m_gameBoard)
         {
@@ -58,6 +62,11 @@ public class GameManager : MonoBehaviour
             Debug.LogWarning("WARN: There is no sound manager defined!");
         }
 
+        if (!m_scoreManager)
+        {
+            Debug.LogWarning("WARN: There is no score manager defined!");
+        }
+
         if (m_gameOverPanel)
         {
             m_gameOverPanel.SetActive(false);
@@ -72,7 +81,12 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!m_gameBoard || !m_spawner || !m_soundManager || !m_activeShape || m_gameOver)
+        if (!m_gameBoard ||
+            !m_spawner ||
+            !m_soundManager ||
+            !m_scoreManager ||
+            !m_activeShape ||
+            m_gameOver)
         {
             return;
         }
@@ -125,7 +139,7 @@ public class GameManager : MonoBehaviour
         else if (Input.GetButton("MoveDown") && (Time.time > m_timeToNextKeyDown) || (Time.time > m_timeToDrop))
         {
             m_timeToNextKeyDown = Time.time + m_keyRepeatRateDown;
-            m_timeToDrop = Time.time + m_dropInterval;
+            m_timeToDrop = Time.time + m_dropIntervalModded;
             m_activeShape.MoveDown();
 
             // Validate the shape's position within board
@@ -170,6 +184,18 @@ public class GameManager : MonoBehaviour
 
         if (m_gameBoard.m_completedRows > 0)
         {
+            // Update score
+            m_scoreManager.ScoreLines(m_gameBoard.m_completedRows);
+            if (m_scoreManager.m_didLevelUp)
+            {
+                PlaySound(m_soundManager.m_levelUpSound, 1f);
+                // Gradually increase difficulty with each level, up to a max of 0.05f fall speed
+                m_dropIntervalModded = Mathf.Clamp(m_dropInterval - (((float) m_scoreManager.m_level - 1) * 0.1f), 0.05f, 1f);
+            }
+            else
+            {
+                PlaySound(m_soundManager.m_clearRowSound, 0.5f);
+            }
             if (m_gameBoard.m_completedRows == 2)
             {
                 AudioClip randomVocal = m_soundManager.GetRandomClip(m_soundManager.m_doubleVocalClips);
@@ -184,7 +210,6 @@ public class GameManager : MonoBehaviour
             {
                 PlaySound(m_soundManager.m_tetrisVocalClip, 5f);
             }
-            PlaySound(m_soundManager.m_clearRowSound, 0.5f);
         }
     }
 

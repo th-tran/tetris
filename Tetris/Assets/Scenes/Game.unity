@@ -136,7 +136,7 @@ GameObject:
   - component: {fileID: 35767316}
   m_Layer: 5
   m_Name: LevelStartTextFadeInOut
-  m_TagString: Untagged
+  m_TagString: Fader
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -275,6 +275,7 @@ Transform:
   m_Children:
   - {fileID: 1762860121}
   - {fileID: 951025316}
+  - {fileID: 1440495995}
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1856,6 +1857,7 @@ MonoBehaviour:
   m_moveSound: {fileID: 8300000, guid: cfdc9b3c0e6545641a2e63b93ee8e05f, type: 3}
   m_rotateSound: {fileID: 8300000, guid: 82c3e2777ef4a244ebf622fb69fb1916, type: 3}
   m_dropSound: {fileID: 8300000, guid: f23585ec9f52e3b47a7f1d16e17802c9, type: 3}
+  m_levelUpSound: {fileID: 8300000, guid: af73c464c7fa4bb4cbb90fafc07c43dd, type: 3}
   m_gameOverSound: {fileID: 8300000, guid: 73c97796e40680947aec8caf5e45e51c, type: 3}
   m_errorSound: {fileID: 8300000, guid: 6e6798feee8a1b343be39afeb510d70c, type: 3}
   m_musicSource: {fileID: 988105132}
@@ -2092,7 +2094,7 @@ GameObject:
   - component: {fileID: 1132530308}
   m_Layer: 5
   m_Name: ScreenFader
-  m_TagString: Untagged
+  m_TagString: Fader
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2928,7 +2930,7 @@ GameObject:
   - component: {fileID: 1390127795}
   m_Layer: 5
   m_Name: BackgroundScreenFader
-  m_TagString: Untagged
+  m_TagString: Fader
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3005,6 +3007,55 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1390127793}
   m_CullTransparentMesh: 0
+--- !u!1 &1440495994
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1440495995}
+  - component: {fileID: 1440495996}
+  m_Layer: 0
+  m_Name: ScoreManager
+  m_TagString: ScoreManager
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1440495995
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1440495994}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 58627182}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1440495996
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1440495994}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 715bd56761de2e8428da9bf27e7aa265, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_level: 1
+  m_linesPerLevel: 3
+  m_linesText: {fileID: 1488413532162713127}
+  m_levelText: {fileID: 8549502222818503122}
+  m_scoreText: {fileID: 1347987400}
+  m_didLevelUp: 0
 --- !u!1 &1443071643
 GameObject:
   m_ObjectHideFlags: 0
