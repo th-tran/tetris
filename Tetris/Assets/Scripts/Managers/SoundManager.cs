@@ -55,7 +55,7 @@ public class SoundManager : MonoBehaviour
         }
 
         // Stop music if it is playing already
-        m_musicSource.Stop();
+        StopMusic();
 
         m_musicSource.clip = musicClip;
 
@@ -80,7 +80,7 @@ public class SoundManager : MonoBehaviour
             }
             else
             {
-                m_musicSource.Stop();
+                StopMusic();
             }
         }
     }
@@ -104,5 +104,10 @@ public class SoundManager : MonoBehaviour
         {
             m_fxIconToggle.ToggleIcon(m_fxEnabled);
         }
+    }
+
+    public void StopMusic()
+    {
+        m_musicSource.Stop();
     }
 }

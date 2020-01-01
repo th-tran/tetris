@@ -199,6 +199,7 @@ public class GameManager : MonoBehaviour
         }
 
         PlaySound(m_soundManager.m_gameOverSound, 5f);
+        m_soundManager.StopMusic();
     }
 
     public void Restart()
