@@ -14,6 +14,7 @@ public class SoundManager : MonoBehaviour
     public AudioClip m_moveSound;
     public AudioClip m_rotateSound;
     public AudioClip m_dropSound;
+    public AudioClip m_holdSound;
     public AudioClip m_levelUpSound;
     public AudioClip m_gameOverSound;
     public AudioClip m_errorSound;

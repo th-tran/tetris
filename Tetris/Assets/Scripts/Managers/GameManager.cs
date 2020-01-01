@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
     Spawner m_spawner;
     Shape m_activeShape;
     Ghost m_ghost;
+    Holder m_holder;
     SoundManager m_soundManager;
     ScoreManager m_scoreManager;
     float m_dropInterval = 0.5f;
@@ -40,6 +41,7 @@ public class GameManager : MonoBehaviour
         m_soundManager = GameObject.FindWithTag("SoundManager").GetComponent<SoundManager>();
         m_scoreManager = GameObject.FindWithTag("ScoreManager").GetComponent<ScoreManager>();
         m_ghost = GameObject.FindWithTag("Ghost").GetComponent<Ghost>();
+        m_holder = GameObject.FindWithTag("Holder").GetComponent<Holder>();
 
         if (!m_gameBoard)
         {
@@ -173,6 +175,10 @@ public class GameManager : MonoBehaviour
         {
             TogglePause();
         }
+        else if (Input.GetButtonDown("Hold"))
+        {
+            Hold();
+        }
     }
 
     void LandShape()
@@ -190,6 +196,13 @@ public class GameManager : MonoBehaviour
         {
             m_ghost.Reset();
         }
+
+        // Reactivate the shape holder
+        if (m_holder)
+        {
+            m_holder.m_canRelease = true;
+        }
+
         m_activeShape = m_spawner.SpawnShape();
 
         // Play sound FX for shape landing
@@ -285,6 +298,39 @@ public class GameManager : MonoBehaviour
             }
 
             Time.timeScale = (m_isPaused) ? 0f : 1f;
+        }
+    }
+
+    public void Hold()
+    {
+        if (!m_holder)
+        {
+            return;
+        }
+
+        if (!m_holder.m_heldShape)
+        {
+            m_holder.Catch(m_activeShape);
+            PlaySound(m_soundManager.m_holdSound, 1f);
+            m_activeShape = m_spawner.SpawnShape();
+        }
+        else if (m_holder.m_canRelease)
+        {
+            Shape temp = m_activeShape;
+            m_activeShape = m_holder.Release();
+            m_activeShape.transform.position = m_spawner.transform.position;
+            m_holder.Catch(temp);
+            PlaySound(m_soundManager.m_holdSound, 1f);
+        }
+        else
+        {
+            Debug.LogWarning("WARN: Wait for cooldown!");
+            PlaySound(m_soundManager.m_errorSound, 1f);
+        }
+
+        if (m_ghost)
+        {
+            m_ghost.Reset();
         }
     }
 }
