@@ -27,6 +27,8 @@ public class ScoreManager : MonoBehaviour
     const int m_tripleFactor = 300;
     const int m_tetrisFactor = 1200;
 
+    public ParticlePlayer m_levelUpFx;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -115,5 +117,10 @@ public class ScoreManager : MonoBehaviour
         m_level++;
         m_lines = m_linesPerLevel * m_level;
         m_didLevelUp = true;
+
+        if (m_levelUpFx)
+        {
+            m_levelUpFx.Play();
+        }
     }
 }

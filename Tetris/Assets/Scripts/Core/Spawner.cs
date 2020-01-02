@@ -10,6 +10,7 @@ public class Spawner : MonoBehaviour
     Shape[] m_queuedShapes = new Shape[3];
 
     float m_queueScale = 0.5f;
+    public ParticlePlayer m_spawnFx;
 
     void Awake()
     {
@@ -48,7 +49,15 @@ public class Spawner : MonoBehaviour
         Shape shape = null;
         shape = GetQueuedShape();
         shape.transform.position = transform.position;
-        shape.transform.localScale = Vector3.one;
+
+        // Enlarge the shape popped from queue as a visual effect
+        StartCoroutine(GrowShape(shape, transform.position, 0.25f));
+
+        // Spawn visual effect
+        if (m_spawnFx)
+        {
+            m_spawnFx.Play();
+        }
 
         if (shape)
         {
@@ -105,5 +114,22 @@ public class Spawner : MonoBehaviour
         FillQueue();
 
         return firstShape;
+    }
+
+    IEnumerator GrowShape(Shape shape, Vector3 position, float growTime = 0.5f)
+    {
+        float size = 0f;
+        growTime = Mathf.Clamp(growTime, 0.1f, 2f);
+        float sizeDelta = Time.deltaTime / growTime;
+
+        while (size < 1f)
+        {
+            shape.transform.localScale = new Vector3(size, size, size);
+            size += sizeDelta;
+            shape.transform.position = position;
+            yield return null;
+        }
+
+        shape.transform.localScale = Vector3.one;
     }
 }

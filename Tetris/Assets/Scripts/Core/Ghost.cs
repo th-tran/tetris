@@ -26,9 +26,10 @@ public class Ghost : MonoBehaviour
         }
         else
         {
-            // Match the original shape's position and rotation
+            // Match the original shape
             m_ghostShape.transform.position = originalShape.transform.position;
             m_ghostShape.transform.rotation = originalShape.transform.rotation;
+            m_ghostShape.transform.localScale = Vector3.one;
         }
 
         // Drop the ghost to the bottom of the board

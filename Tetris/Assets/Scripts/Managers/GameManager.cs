@@ -27,6 +27,7 @@ public class GameManager : MonoBehaviour
     bool m_clockwise = true;
     public bool m_isPaused = false;
     public GameObject m_pausePanel;
+    public ParticlePlayer m_gameOverFx;
 
     // Start is called before the first frame update
     void Start()
@@ -252,13 +253,25 @@ public class GameManager : MonoBehaviour
         m_activeShape.MoveUp();
         m_gameOver = true;
 
+        StartCoroutine("GameOverRoutine");
+
+        PlaySound(m_soundManager.m_gameOverSound, 5f);
+        m_soundManager.StopMusic();
+    }
+
+    IEnumerator GameOverRoutine()
+    {
+        if (m_gameOverFx)
+        {
+            m_gameOverFx.Play();
+        }
+
+        yield return new WaitForSeconds(0.3f);
+
         if (m_gameOverPanel)
         {
             m_gameOverPanel.SetActive(true);
         }
-
-        PlaySound(m_soundManager.m_gameOverSound, 5f);
-        m_soundManager.StopMusic();
     }
 
     public void Restart()
