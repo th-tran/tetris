@@ -4,28 +4,32 @@ using UnityEngine;
 
 public class Shape : MonoBehaviour
 {
+    // Shape properties
     public bool m_canRotate = true;
+
+    // Shape queue data
     public Vector3 m_queueOffset;
+
+    // Used for particle effects on landing a shape
     GameObject[] m_glowSquareFx;
     public string glowSquareTag = "LandShapeFx";
 
     // Start is called before the first frame update
     void Start()
     {
+        // Attach the shape with the all the glowing square objects.
+        // There is expected to be at least 4 within the game hierarchy.
         if (glowSquareTag != "")
         {
             m_glowSquareFx = GameObject.FindGameObjectsWithTag(glowSquareTag);
         }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
+    // Plays the particle effects from landing a shape
     public void LandShapeFX()
     {
+        // Play the particle effect of landing a square
+        // for each respective square of the shape.
         int i = 0;
 
         foreach (Transform child in gameObject.transform)

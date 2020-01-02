@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Board : MonoBehaviour
 {
+    // Board data and properties
     public Transform m_emptySprite;
     public int m_height = 30;
     public int m_width = 10;
@@ -13,10 +14,12 @@ public class Board : MonoBehaviour
 
     public int m_completedRows = 0;
 
+    // Used for playing the particle effect on line clears
     public ParticlePlayer[] m_rowGlowFx = new ParticlePlayer[4];
 
     void Awake()
     {
+        // Initialize the grid
         m_grid = new Transform[m_width,m_height];
     }
 
@@ -26,24 +29,22 @@ public class Board : MonoBehaviour
         DrawEmptyCells();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
+    // Checks if the given (x,y) coordinates are within the board space
     bool IsWithinBoard(int x, int y)
     {
         return (x >= 0 && x < m_width && y >= 0);
     }
 
+    // Checks if the given (x,y) coordinates are currently occupied by a shape
     bool IsOccupied(int x, int y, Shape shape)
     {
         return (m_grid[x, y] != null && m_grid[x, y].parent != shape.transform);
     }
 
+    // Checks if the shape is in a legal position on the board
     public bool IsValidPosition(Shape shape)
     {
+        // Iterate through each square of the shape
         foreach (Transform child in shape.transform)
         {
             Vector2 pos = Vector2Int.RoundToInt(child.position);
@@ -59,6 +60,7 @@ public class Board : MonoBehaviour
         return true;
     }
 
+    // Draws the board onto the screen
     void DrawEmptyCells()
     {
         if (m_emptySprite)
@@ -81,6 +83,7 @@ public class Board : MonoBehaviour
         }
     }
 
+    // Registers the shape into the grid as data
     public void StoreShapeInGrid(Shape shape)
     {
         if (shape == null)
@@ -95,6 +98,7 @@ public class Board : MonoBehaviour
         }
     }
 
+    // Checks if the given row has a complete line
     bool IsComplete(int y)
     {
         for (int x = 0; x < m_width; x++)
@@ -107,6 +111,7 @@ public class Board : MonoBehaviour
         return true;
     }
 
+    // Removes all data from the given row of the board
     void ClearRow(int y)
     {
         for (int x = 0; x < m_width; x++)
@@ -119,6 +124,7 @@ public class Board : MonoBehaviour
         }
     }
 
+    // Moves all data of the given row of the board one row down
     void ShiftOneRowDown(int y)
     {
         for (int x = 0; x < m_width; x++)
@@ -132,6 +138,7 @@ public class Board : MonoBehaviour
         }
     }
 
+    // Moves all data from the given row of the board up to the top, one row down
     void ShiftRowsDown(int startY)
     {
         for (int i = startY; i < m_height; i++)
@@ -140,7 +147,9 @@ public class Board : MonoBehaviour
         }
     }
 
-    public IEnumerator ClearAllRows()
+    // Handles the process of clearing lines and
+    // and giving visual feedback to the player
+    public IEnumerator ClearAllRowsRoutine()
     {
         m_completedRows = 0;
         // Play visual effect
@@ -171,6 +180,7 @@ public class Board : MonoBehaviour
         }
     }
 
+    // Checks if the given shape is past the board top (i.e. the line of death)
     public bool IsOverLimit(Shape shape)
     {
         foreach (Transform child in shape.transform)
@@ -183,8 +193,11 @@ public class Board : MonoBehaviour
         return false;
     }
 
+    // Plays the particle effects from clearing the given row on the board
     void ClearRowFX(int index, int y)
     {
+        // There are 4 respective row glow objects available.
+        // The index is used to access them accordingly.
         if (m_rowGlowFx[index])
         {
             m_rowGlowFx[index].transform.position = new Vector3(0, y, -2f);

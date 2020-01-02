@@ -6,11 +6,14 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Image))]
 public class IconToggle : MonoBehaviour
 {
+    // References to "on/off" icons of the attached object, respectively
     public Sprite m_iconTrue;
     public Sprite m_iconFalse;
 
+    // Defaults to "on" icon
     public bool m_defaultIconState = true;
 
+    // Used to store the image data of the attached object
     Image m_image;
 
     // Start is called before the first frame update
@@ -20,12 +23,8 @@ public class IconToggle : MonoBehaviour
         m_image.sprite = (m_defaultIconState) ? m_iconTrue : m_iconFalse;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
+    // Switches the image to use the "off" icon if the current icon is "on",
+    // and vice versa.
     public void ToggleIcon(bool state)
     {
         if (!m_image || !m_iconTrue || !m_iconFalse)

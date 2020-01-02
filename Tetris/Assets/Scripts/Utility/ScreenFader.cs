@@ -6,12 +6,17 @@ using UnityEngine.UI;
 [RequireComponent(typeof(MaskableGraphic))]
 public class ScreenFader : MonoBehaviour
 {
+    // ScreenFader properties
     public float m_startAlpha = 1f;
     public float m_targetAlpha = 0f;
     public float m_delay = 0f;
     public float m_timeToFade = 1f;
 
+    // Used to calculate the incremenet in the fade formula,
+    // based on properties of the attached object.
     float m_inc;
+
+    // Used to store data of the attached object
     float m_currentAlpha;
     MaskableGraphic m_graphic;
     Color m_originalColor;
@@ -34,6 +39,7 @@ public class ScreenFader : MonoBehaviour
         StartCoroutine("FadeRoutine");
     }
 
+    // Fades the attached object to the target alpha
     IEnumerator FadeRoutine()
     {
         // Starting delay

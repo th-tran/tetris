@@ -4,12 +4,15 @@ using UnityEngine;
 
 public class Spawner : MonoBehaviour
 {
+    // Spawner (and shape queue) data and properties
     public Shape[] m_allShapes;
     public Transform[] m_queuedXforms = new Transform[3];
 
     Shape[] m_queuedShapes = new Shape[3];
 
     float m_queueScale = 0.5f;
+
+    // Used for particle effect when spawning a shape
     public ParticlePlayer m_spawnFx;
 
     void Awake()
@@ -17,18 +20,7 @@ public class Spawner : MonoBehaviour
         InitQueue();
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
+    // Returns a random shape from the list of available shapes.
     Shape GetRandomShape()
     {
         int i = Random.Range(0, m_allShapes.Length);
@@ -43,6 +35,7 @@ public class Spawner : MonoBehaviour
         }
     }
 
+    // Returns a shape to be spawned next from the queue
     public Shape SpawnShape()
     {
         // Get shape from queue and move it to spawner position
@@ -51,7 +44,7 @@ public class Spawner : MonoBehaviour
         shape.transform.position = transform.position;
 
         // Enlarge the shape popped from queue as a visual effect
-        StartCoroutine(GrowShape(shape, transform.position, 0.25f));
+        StartCoroutine(GrowShapeRoutine(shape, transform.position, 0.25f));
 
         // Spawn visual effect
         if (m_spawnFx)
@@ -70,6 +63,7 @@ public class Spawner : MonoBehaviour
 
     }
 
+    // Clear and initialize the shape queue
     void InitQueue()
     {
         for (int i = 0; i < m_queuedShapes.Length; i++)
@@ -80,6 +74,7 @@ public class Spawner : MonoBehaviour
         FillQueue();
     }
 
+    // Populate the queue with random shapes
     void FillQueue()
     {
         for (int i = 0; i < m_queuedShapes.Length; i++)
@@ -93,6 +88,7 @@ public class Spawner : MonoBehaviour
         }
     }
 
+    // Returns the first shape in the queue
     Shape GetQueuedShape()
     {
         Shape firstShape = null;
@@ -116,7 +112,8 @@ public class Spawner : MonoBehaviour
         return firstShape;
     }
 
-    IEnumerator GrowShape(Shape shape, Vector3 position, float growTime = 0.5f)
+    // Enlarges the shape from its current size to full size in the given time
+    IEnumerator GrowShapeRoutine(Shape shape, Vector3 position, float growTime = 0.5f)
     {
         float size = 0f;
         growTime = Mathf.Clamp(growTime, 0.1f, 2f);

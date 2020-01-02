@@ -4,10 +4,13 @@ using UnityEngine;
 
 public class Ghost : MonoBehaviour
 {
+    // Ghost data and properties
     Shape m_ghostShape = null;
     bool m_hitBottom = false;
     public Color m_color = new Color(1f, 1f, 1f, 0.2f);
 
+    // Creates a new "ghost" from the given shape onto the board,
+    // or updates the existing ghost to match the given shape.
     public void DrawGhost(Shape originalShape, Board gameBoard)
     {
         if (!m_ghostShape)
@@ -18,7 +21,7 @@ public class Ghost : MonoBehaviour
 
             SpriteRenderer[] allRenderers = m_ghostShape.GetComponentsInChildren<SpriteRenderer>();
 
-            // Turn ghost color into faint white
+            // Reduce alpha for the visual ghost effect
             foreach (SpriteRenderer r in allRenderers)
             {
                 r.color = m_color;
@@ -46,18 +49,7 @@ public class Ghost : MonoBehaviour
         }
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
+    // Self-destruct
     public void Reset()
     {
         Destroy(m_ghostShape.gameObject);

@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    // References to other game components
     Board m_gameBoard;
     Spawner m_spawner;
     Shape m_activeShape;
@@ -12,6 +13,8 @@ public class GameManager : MonoBehaviour
     Holder m_holder;
     SoundManager m_soundManager;
     ScoreManager m_scoreManager;
+
+    // Controls speed of drop and player movement
     float m_dropInterval = 0.5f;
     float m_dropIntervalModded;
     float m_timeToDrop;
@@ -21,22 +24,32 @@ public class GameManager : MonoBehaviour
     float m_timeToNextKeyDown;
     [Range(0.01f, 1f)]
     public float m_keyRepeatRateDown = 0.02f;
+
+    //Controls game over state and effect
     bool m_gameOver = false;
     public GameObject m_gameOverPanel;
+    public ParticlePlayer m_gameOverFx;
+
+    // Controls rotation toggle on UI
     public IconToggle m_rotIconToggle;
     bool m_clockwise = true;
+
+    // Controls pausing
     public bool m_isPaused = false;
+    bool m_canPause = true;
+    float m_introLength = 2.5f;
     public GameObject m_pausePanel;
-    public ParticlePlayer m_gameOverFx;
 
     // Start is called before the first frame update
     void Start()
     {
+        // Initialize time-related variables
         m_timeToDrop = Time.time;
         m_timeToNextKeyLeftRight = Time.time + m_keyRepeatRateLeftRight;
         m_timeToNextKeyDown = Time.time + m_keyRepeatRateDown;
         m_dropIntervalModded = m_dropInterval;
 
+        // Grab reference to game components
         m_gameBoard = GameObject.FindWithTag("Board").GetComponent<Board>();
         m_spawner = GameObject.FindWithTag("Spawner").GetComponent<Spawner>();
         m_soundManager = GameObject.FindWithTag("SoundManager").GetComponent<SoundManager>();
@@ -44,6 +57,7 @@ public class GameManager : MonoBehaviour
         m_ghost = GameObject.FindWithTag("Ghost").GetComponent<Ghost>();
         m_holder = GameObject.FindWithTag("Holder").GetComponent<Holder>();
 
+        // Pre-checks
         if (!m_gameBoard)
         {
             Debug.LogWarning("WARN: There is no game board defined!");
@@ -55,6 +69,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
+            // Spawn the first shape
             m_spawner.transform.position = Vector3Int.RoundToInt(m_spawner.transform.position);
             if (m_activeShape == null)
             {
@@ -81,11 +96,14 @@ public class GameManager : MonoBehaviour
         {
             m_pausePanel.SetActive(false);
         }
+
+        StartCoroutine("PauseDelayRoutine");
     }
 
     // Update is called once per frame
     void Update()
     {
+        // Pre-check
         if (!m_gameBoard ||
             !m_spawner ||
             !m_soundManager ||
@@ -95,6 +113,7 @@ public class GameManager : MonoBehaviour
         {
             return;
         }
+
         PlayerInput();
     }
 
@@ -104,6 +123,13 @@ public class GameManager : MonoBehaviour
         {
             m_ghost.DrawGhost(m_activeShape, m_gameBoard);
         }
+    }
+
+    IEnumerator PauseDelayRoutine()
+    {
+        m_canPause = false;
+        yield return new WaitForSeconds(m_introLength);
+        m_canPause = true;
     }
 
     void PlayerInput()
@@ -172,7 +198,7 @@ public class GameManager : MonoBehaviour
         {
             ToggleRotDirection();
         }
-        else if (Input.GetButtonDown("Pause"))
+        else if (Input.GetButtonDown("Pause") && m_canPause)
         {
             TogglePause();
         }
@@ -214,7 +240,7 @@ public class GameManager : MonoBehaviour
             PlaySound(m_soundManager.m_dropSound, 0.75f);
 
             // Clear rows (if any)
-            m_gameBoard.StartCoroutine("ClearAllRows");
+            m_gameBoard.StartCoroutine("ClearAllRowsRoutine");
 
             if (m_gameBoard.m_completedRows > 0)
             {
@@ -266,6 +292,7 @@ public class GameManager : MonoBehaviour
             m_gameOverFx.Play();
         }
 
+        // Delay before bringing up game over screen
         yield return new WaitForSeconds(0.3f);
 
         if (m_gameOverPanel)
@@ -276,8 +303,9 @@ public class GameManager : MonoBehaviour
 
     public void Restart()
     {
+        // Reload the active scene at normal speed
         Time.timeScale = 1f;
-        SceneManager.LoadScene("Game");
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     void PlaySound(AudioClip clip, float volMultiplier)
@@ -312,9 +340,11 @@ public class GameManager : MonoBehaviour
 
             if (m_soundManager)
             {
+                // Play music quieter if paused
                 m_soundManager.m_musicSource.volume = (m_isPaused) ? m_soundManager.m_musicVolume = 0.25f : m_soundManager.m_musicVolume = 1f;
             }
 
+            // Stop time if paused
             Time.timeScale = (m_isPaused) ? 0f : 1f;
         }
     }
@@ -328,12 +358,14 @@ public class GameManager : MonoBehaviour
 
         if (!m_holder.m_heldShape)
         {
+            // Hold the shape
             m_holder.Catch(m_activeShape);
             PlaySound(m_soundManager.m_holdSound, 1f);
             m_activeShape = m_spawner.SpawnShape();
         }
         else if (m_holder.m_canRelease)
         {
+            // Swap the shape with the currently held shape
             Shape temp = m_activeShape;
             m_activeShape = m_holder.Release();
             m_activeShape.transform.position = m_spawner.transform.position;
@@ -346,6 +378,7 @@ public class GameManager : MonoBehaviour
             PlaySound(m_soundManager.m_errorSound, 1f);
         }
 
+        // New shape is spawning, so reset the ghost shape
         if (m_ghost)
         {
             m_ghost.Reset();

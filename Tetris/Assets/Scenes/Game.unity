@@ -507,7 +507,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.39215687}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.7058824}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -4808,7 +4808,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.392}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.7058824}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -7214,10 +7214,10 @@ MonoBehaviour:
   m_keyRepeatRateLeftRight: 0.15
   m_keyRepeatRateDown: 0.02
   m_gameOverPanel: {fileID: 1177390560}
+  m_gameOverFx: {fileID: 1142435746}
   m_rotIconToggle: {fileID: 1718199234212087190}
   m_isPaused: 0
   m_pausePanel: {fileID: 94401444}
-  m_gameOverFx: {fileID: 1142435746}
 --- !u!4 &1762860121
 Transform:
   m_ObjectHideFlags: 0

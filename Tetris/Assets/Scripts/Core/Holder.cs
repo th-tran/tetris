@@ -4,23 +4,15 @@ using UnityEngine;
 
 public class Holder : MonoBehaviour
 {
+    // Holder data and properties
     public Transform m_holderXform;
     public Shape m_heldShape = null;
     float m_scale = 0.5f;
     public bool m_canRelease = false;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
+    // Puts the given shape into the holder,
+    // or swaps it with the currently held shape.
+    // Does nothing if the holder is on cooldown.
     public void Catch(Shape shape)
     {
         if (m_heldShape)
@@ -36,6 +28,7 @@ public class Holder : MonoBehaviour
 
         if (m_holderXform)
         {
+            // Put the shape into the holder
             shape.transform.position = m_holderXform.position + shape.m_queueOffset;
             shape.transform.rotation = Quaternion.identity;
             shape.transform.localScale = new Vector3(m_scale, m_scale, m_scale);
@@ -47,16 +40,25 @@ public class Holder : MonoBehaviour
         }
     }
 
+    // Returns the currently held shape,
+    // or null if the holder is empty.
     public Shape Release()
     {
-        // Release the shape from holder
-        m_heldShape.transform.localScale = Vector3.one;
-        Shape shape = m_heldShape;
-        m_heldShape = null;
+        if (m_heldShape)
+        {
+            // Release the shape from holder
+            m_heldShape.transform.localScale = Vector3.one;
+            Shape shape = m_heldShape;
+            m_heldShape = null;
 
-        // Deactivate shape holder
-        m_canRelease = false;
+            // Deactivate shape holder
+            m_canRelease = false;
 
-        return shape;
+            return shape;
+        }
+        else
+        {
+            return null;
+        }
     }
 }

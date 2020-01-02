@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class ParticlePlayer : MonoBehaviour
 {
+    // List of all particle systems of the attached object
     public ParticleSystem[] allParticles;
 
     // Start is called before the first frame update
