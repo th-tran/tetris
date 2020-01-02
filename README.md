@@ -1,7 +1,7 @@
 
 # Dev log
 
-### 2019-21-29
+### 2019-12-29
 
 All the initial set-up of the project. I created rudimentary classes to extend later and layed out the basic UI.
 
@@ -18,7 +18,7 @@ All the initial set-up of the project. I created rudimentary classes to extend l
 
 ---
 
-### 2019-21-30
+### 2019-12-30
 
 I extended the previous classes to implement all the fun Tetris logic :)
 
@@ -36,7 +36,7 @@ I extended the previous classes to implement all the fun Tetris logic :)
 
 ---
 
-### 2019-21-31
+### 2019-12-31
 
 Sound day! (and a bit of UI too)
 
@@ -48,3 +48,19 @@ Sound day! (and a bit of UI too)
 *Other:*
 - Added music and sounds that play on various conditions to make the game more alive
 - Added a screen fade in/out effect on game start for visual flair
+
+---
+
+### 2020-01-01
+
+I set off the fireworks to really bring the game to life and start the year off right :)
+
+*Functional:*
+- Created Ghost class to draw a visual representation of the block if it were hard dropped
+- Extended Spawner class to implement a queue of shapes to replace the random spawning of shapes
+- Created Holder class to allow the player to "catch" shapes (one at a time) and "release" them later in the game (cooldown of one time before landing)
+- Created a ParticlePlayer class that plays particle effects via scripting and makes the magic happen
+
+*Other:*
+- Added several particle effects that play on certain events in the game (e.g. landing a shape, clearing a line, leveling up, etc.)
+- Added some persistent particle effects that play in the background and give the sense of constant motion
