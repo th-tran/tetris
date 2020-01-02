@@ -183,61 +183,66 @@ public class GameManager : MonoBehaviour
 
     void LandShape()
     {
-        // No input delay after shape lands
-        m_timeToNextKeyLeftRight = Time.time;
-        m_timeToNextKeyDown = Time.time;
-
-        // Land the shape
-        m_activeShape.MoveUp();
-        m_gameBoard.StoreShapeInGrid(m_activeShape);
-
-        // Reset the ghost shape before spawning a new shape
-        if (m_ghost)
+        if (m_activeShape)
         {
-            m_ghost.Reset();
-        }
+            // No input delay after shape lands
+            m_timeToNextKeyLeftRight = Time.time;
+            m_timeToNextKeyDown = Time.time;
 
-        // Reactivate the shape holder
-        if (m_holder)
-        {
-            m_holder.m_canRelease = true;
-        }
+            // Land the shape
+            m_activeShape.MoveUp();
+            m_gameBoard.StoreShapeInGrid(m_activeShape);
 
-        m_activeShape = m_spawner.SpawnShape();
+            m_activeShape.LandShapeFX();
 
-        // Play sound FX for shape landing
-        PlaySound(m_soundManager.m_dropSound, 0.75f);
-
-        // Clear rows (if any)
-        m_gameBoard.ClearAllRows();
-
-        if (m_gameBoard.m_completedRows > 0)
-        {
-            // Update score
-            m_scoreManager.ScoreLines(m_gameBoard.m_completedRows);
-            if (m_scoreManager.m_didLevelUp)
+            // Reset the ghost shape before spawning a new shape
+            if (m_ghost)
             {
-                PlaySound(m_soundManager.m_levelUpSound, 1f);
-                // Gradually increase difficulty with each level, up to a max of 0.05f fall speed
-                m_dropIntervalModded = Mathf.Clamp(m_dropInterval - (((float) m_scoreManager.m_level - 1) * 0.1f), 0.05f, 1f);
+                m_ghost.Reset();
             }
-            else
+
+            // Reactivate the shape holder
+            if (m_holder)
             {
-                PlaySound(m_soundManager.m_clearRowSound, 0.5f);
+                m_holder.m_canRelease = true;
             }
-            if (m_gameBoard.m_completedRows == 2)
+
+            m_activeShape = m_spawner.SpawnShape();
+
+            // Play sound FX for shape landing
+            PlaySound(m_soundManager.m_dropSound, 0.75f);
+
+            // Clear rows (if any)
+            m_gameBoard.StartCoroutine("ClearAllRows");
+
+            if (m_gameBoard.m_completedRows > 0)
             {
-                AudioClip randomVocal = m_soundManager.GetRandomClip(m_soundManager.m_doubleVocalClips);
-                PlaySound(randomVocal, 5f);
-            }
-            else if (m_gameBoard.m_completedRows == 3)
-            {
-                AudioClip randomVocal = m_soundManager.GetRandomClip(m_soundManager.m_tripleVocalClips);
-                PlaySound(randomVocal, 5f);
-            }
-            else if (m_gameBoard.m_completedRows >= 4)
-            {
-                PlaySound(m_soundManager.m_tetrisVocalClip, 5f);
+                // Update score
+                m_scoreManager.ScoreLines(m_gameBoard.m_completedRows);
+                if (m_scoreManager.m_didLevelUp)
+                {
+                    PlaySound(m_soundManager.m_levelUpSound, 1f);
+                    // Gradually increase difficulty with each level, up to a max of 0.05f fall speed
+                    m_dropIntervalModded = Mathf.Clamp(m_dropInterval - (((float) m_scoreManager.m_level - 1) * 0.1f), 0.05f, 1f);
+                }
+                else
+                {
+                    PlaySound(m_soundManager.m_clearRowSound, 0.5f);
+                }
+                if (m_gameBoard.m_completedRows == 2)
+                {
+                    AudioClip randomVocal = m_soundManager.GetRandomClip(m_soundManager.m_doubleVocalClips);
+                    PlaySound(randomVocal, 5f);
+                }
+                else if (m_gameBoard.m_completedRows == 3)
+                {
+                    AudioClip randomVocal = m_soundManager.GetRandomClip(m_soundManager.m_tripleVocalClips);
+                    PlaySound(randomVocal, 5f);
+                }
+                else if (m_gameBoard.m_completedRows >= 4)
+                {
+                    PlaySound(m_soundManager.m_tetrisVocalClip, 5f);
+                }
             }
         }
     }

@@ -13,6 +13,8 @@ public class Board : MonoBehaviour
 
     public int m_completedRows = 0;
 
+    public ParticlePlayer[] m_rowGlowFx = new ParticlePlayer[4];
+
     void Awake()
     {
         m_grid = new Transform[m_width,m_height];
@@ -138,16 +140,29 @@ public class Board : MonoBehaviour
         }
     }
 
-    public void ClearAllRows()
+    public IEnumerator ClearAllRows()
     {
         m_completedRows = 0;
+        // Play visual effect
         for (int y = 0; y < m_height; y++)
         {
             if (IsComplete(y))
             {
+                ClearRowFX(m_completedRows, y);
                 m_completedRows++;
+            }
+        }
+        // Delay before clear
+        yield return new WaitForSeconds(0.5f);
+        // Clear lines and shift
+        for (int y = 0; y < m_height; y++)
+        {
+            if (IsComplete(y))
+            {
                 ClearRow(y);
                 ShiftRowsDown(y+1);
+                // Delay between each line clear
+                yield return new WaitForSeconds(0.3f);
                 // Check the same row again,
                 // in case the row shifted down is also a line
                 // (i.e. multiple lines in one drop)
@@ -166,5 +181,14 @@ public class Board : MonoBehaviour
             }
         }
         return false;
+    }
+
+    void ClearRowFX(int index, int y)
+    {
+        if (m_rowGlowFx[index])
+        {
+            m_rowGlowFx[index].transform.position = new Vector3(0, y, -2f);
+            m_rowGlowFx[index].Play();
+        }
     }
 }
