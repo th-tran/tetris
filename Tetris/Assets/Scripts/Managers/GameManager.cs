@@ -162,12 +162,25 @@ public class GameManager : MonoBehaviour
                 PlaySound(SoundManager.Instance.m_moveSound, 0.5f);
             }
         }
-        else if (Input.GetButtonDown("Rotate") && m_activeShape.m_canRotate)
+        else if (Input.GetButtonDown("RotateRight") && m_activeShape.m_canRotate)
         {
             m_activeShape.RotateClockwise(m_clockwise);
             if (!m_gameBoard.IsValidPosition(m_activeShape))
             {
                 m_activeShape.RotateClockwise(!m_clockwise);
+                PlaySound(SoundManager.Instance.m_errorSound, 0.5f);
+            }
+            else
+            {
+                PlaySound(SoundManager.Instance.m_rotateSound, 0.5f);
+            }
+        }
+        else if (Input.GetButtonDown("RotateLeft") && m_activeShape.m_canRotate)
+        {
+            m_activeShape.RotateClockwise(!m_clockwise);
+            if (!m_gameBoard.IsValidPosition(m_activeShape))
+            {
+                m_activeShape.RotateClockwise(m_clockwise);
                 PlaySound(SoundManager.Instance.m_errorSound, 0.5f);
             }
             else
@@ -194,9 +207,9 @@ public class GameManager : MonoBehaviour
                 }
             }
         }
-        else if (Input.GetButtonDown("ToggleRot"))
+        else if (Input.GetButtonDown("ToggleRotation"))
         {
-            ToggleRotDirection();
+            ToggleRotationDir();
         }
         else if (Input.GetButtonDown("Pause") && m_canPause)
         {
@@ -316,7 +329,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void ToggleRotDirection()
+    public void ToggleRotationDir()
     {
         m_clockwise = !m_clockwise;
         if (m_rotIconToggle)

@@ -9016,7 +9016,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1762860120}
-        m_MethodName: ToggleRotDirection
+        m_MethodName: ToggleRotationDir
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

@@ -12,7 +12,7 @@ InputManager:
     negativeButton: 
     positiveButton: right
     altNegativeButton: 
-    altPositiveButton: 
+    altPositiveButton: d
     gravity: 0
     dead: 0
     sensitivity: 0
@@ -28,7 +28,7 @@ InputManager:
     negativeButton: 
     positiveButton: left
     altNegativeButton: 
-    altPositiveButton: 
+    altPositiveButton: a
     gravity: 0
     dead: 0
     sensitivity: 0
@@ -44,7 +44,7 @@ InputManager:
     negativeButton: 
     positiveButton: down
     altNegativeButton: 
-    altPositiveButton: 
+    altPositiveButton: s
     gravity: 0
     dead: 0
     sensitivity: 0
@@ -60,7 +60,7 @@ InputManager:
     negativeButton: 
     positiveButton: up
     altNegativeButton: 
-    altPositiveButton: 
+    altPositiveButton: w
     gravity: 0
     dead: 0
     sensitivity: 0
@@ -134,7 +134,7 @@ InputManager:
     axis: 0
     joyNum: 0
   - serializedVersion: 3
-    m_Name: ToggleRot
+    m_Name: ToggleRotation
     descriptiveName: 
     descriptiveNegativeName: 
     negativeButton: 
@@ -170,9 +170,41 @@ InputManager:
     descriptiveName: 
     descriptiveNegativeName: 
     negativeButton: 
-    positiveButton: c
+    positiveButton: left shift
     altNegativeButton: 
-    altPositiveButton: 
+    altPositiveButton: c
+    gravity: 0
+    dead: 0
+    sensitivity: 0
+    snap: 0
+    invert: 0
+    type: 0
+    axis: 0
+    joyNum: 0
+  - serializedVersion: 3
+    m_Name: RotateRight
+    descriptiveName: 
+    descriptiveNegativeName: 
+    negativeButton: 
+    positiveButton: up
+    altNegativeButton: 
+    altPositiveButton: w
+    gravity: 0
+    dead: 0
+    sensitivity: 0
+    snap: 0
+    invert: 0
+    type: 0
+    axis: 0
+    joyNum: 0
+  - serializedVersion: 3
+    m_Name: RotateLeft
+    descriptiveName: 
+    descriptiveNegativeName: 
+    negativeButton: 
+    positiveButton: left ctrl
+    altNegativeButton: 
+    altPositiveButton: z
     gravity: 0
     dead: 0
     sensitivity: 0
