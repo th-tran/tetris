@@ -11,8 +11,6 @@ public class GameManager : MonoBehaviour
     Shape m_activeShape;
     Ghost m_ghost;
     Holder m_holder;
-    SoundManager m_soundManager;
-    ScoreManager m_scoreManager;
 
     // Controls speed of drop and player movement
     float m_dropInterval = 0.5f;
@@ -20,7 +18,7 @@ public class GameManager : MonoBehaviour
     float m_timeToDrop;
     float m_timeToNextKeyLeftRight;
     [Range(0.02f, 1f)]
-    public float m_keyRepeatRateLeftRight = 0.25f;
+    public float m_keyRepeatRateLeftRight = 0.15f;
     float m_timeToNextKeyDown;
     [Range(0.01f, 1f)]
     public float m_keyRepeatRateDown = 0.02f;
@@ -40,6 +38,22 @@ public class GameManager : MonoBehaviour
     float m_introLength = 2.5f;
     public GameObject m_pausePanel;
 
+    // Singleton pattern
+    static GameManager _instance;
+    public static GameManager Instance { get { return _instance; } }
+
+    void Awake()
+    {
+        if (_instance != null && _instance != this)
+        {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            _instance = this;
+        }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -52,8 +66,6 @@ public class GameManager : MonoBehaviour
         // Grab reference to game components
         m_gameBoard = GameObject.FindWithTag("Board").GetComponent<Board>();
         m_spawner = GameObject.FindWithTag("Spawner").GetComponent<Spawner>();
-        m_soundManager = GameObject.FindWithTag("SoundManager").GetComponent<SoundManager>();
-        m_scoreManager = GameObject.FindWithTag("ScoreManager").GetComponent<ScoreManager>();
         m_ghost = GameObject.FindWithTag("Ghost").GetComponent<Ghost>();
         m_holder = GameObject.FindWithTag("Holder").GetComponent<Holder>();
 
@@ -77,16 +89,6 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        if (!m_soundManager)
-        {
-            Debug.LogWarning("WARN: There is no sound manager defined!");
-        }
-
-        if (!m_scoreManager)
-        {
-            Debug.LogWarning("WARN: There is no score manager defined!");
-        }
-
         if (m_gameOverPanel)
         {
             m_gameOverPanel.SetActive(false);
@@ -106,8 +108,6 @@ public class GameManager : MonoBehaviour
         // Pre-check
         if (!m_gameBoard ||
             !m_spawner ||
-            !m_soundManager ||
-            !m_scoreManager ||
             !m_activeShape ||
             m_gameOver)
         {
@@ -141,11 +141,11 @@ public class GameManager : MonoBehaviour
             if (!m_gameBoard.IsValidPosition(m_activeShape))
             {
                 m_activeShape.MoveLeft();
-                PlaySound(m_soundManager.m_errorSound, 0.5f);
+                PlaySound(SoundManager.Instance.m_errorSound, 0.5f);
             }
             else
             {
-                PlaySound(m_soundManager.m_moveSound, 0.5f);
+                PlaySound(SoundManager.Instance.m_moveSound, 0.5f);
             }
         }
         else if ((Input.GetButton("MoveLeft") && (Time.time > m_timeToNextKeyLeftRight)) || Input.GetButtonDown("MoveLeft"))
@@ -155,11 +155,11 @@ public class GameManager : MonoBehaviour
             if (!m_gameBoard.IsValidPosition(m_activeShape))
             {
                 m_activeShape.MoveRight();
-                PlaySound(m_soundManager.m_errorSound, 0.5f);
+                PlaySound(SoundManager.Instance.m_errorSound, 0.5f);
             }
             else
             {
-                PlaySound(m_soundManager.m_moveSound, 0.5f);
+                PlaySound(SoundManager.Instance.m_moveSound, 0.5f);
             }
         }
         else if (Input.GetButtonDown("Rotate") && m_activeShape.m_canRotate)
@@ -168,11 +168,11 @@ public class GameManager : MonoBehaviour
             if (!m_gameBoard.IsValidPosition(m_activeShape))
             {
                 m_activeShape.RotateClockwise(!m_clockwise);
-                PlaySound(m_soundManager.m_errorSound, 0.5f);
+                PlaySound(SoundManager.Instance.m_errorSound, 0.5f);
             }
             else
             {
-                PlaySound(m_soundManager.m_rotateSound, 0.5f);
+                PlaySound(SoundManager.Instance.m_rotateSound, 0.5f);
             }
         }
         else if ((Input.GetButton("MoveDown") && (Time.time > m_timeToNextKeyDown)) || (Time.time > m_timeToDrop))
@@ -237,7 +237,7 @@ public class GameManager : MonoBehaviour
             m_activeShape = m_spawner.SpawnShape();
 
             // Play sound FX for shape landing
-            PlaySound(m_soundManager.m_dropSound, 0.75f);
+            PlaySound(SoundManager.Instance.m_dropSound, 0.75f);
 
             // Clear rows (if any)
             m_gameBoard.StartCoroutine("ClearAllRowsRoutine");
@@ -245,30 +245,30 @@ public class GameManager : MonoBehaviour
             if (m_gameBoard.m_completedRows > 0)
             {
                 // Update score
-                m_scoreManager.ScoreLines(m_gameBoard.m_completedRows);
-                if (m_scoreManager.m_didLevelUp)
+                ScoreManager.Instance.ScoreLines(m_gameBoard.m_completedRows);
+                if (ScoreManager.Instance.m_didLevelUp)
                 {
-                    PlaySound(m_soundManager.m_levelUpSound, 1f);
+                    PlaySound(SoundManager.Instance.m_levelUpSound, 1f);
                     // Gradually increase difficulty with each level, up to a max of 0.05f fall speed
-                    m_dropIntervalModded = Mathf.Clamp(m_dropInterval - (((float) m_scoreManager.m_level - 1) * 0.1f), 0.05f, 1f);
+                    m_dropIntervalModded = Mathf.Clamp(m_dropInterval - (((float) ScoreManager.Instance.m_level - 1) * 0.1f), 0.05f, 1f);
                 }
                 else
                 {
-                    PlaySound(m_soundManager.m_clearRowSound, 0.5f);
+                    PlaySound(SoundManager.Instance.m_clearRowSound, 0.5f);
                 }
                 if (m_gameBoard.m_completedRows == 2)
                 {
-                    AudioClip randomVocal = m_soundManager.GetRandomClip(m_soundManager.m_doubleVocalClips);
+                    AudioClip randomVocal = SoundManager.Instance.GetRandomClip(SoundManager.Instance.m_doubleVocalClips);
                     PlaySound(randomVocal, 5f);
                 }
                 else if (m_gameBoard.m_completedRows == 3)
                 {
-                    AudioClip randomVocal = m_soundManager.GetRandomClip(m_soundManager.m_tripleVocalClips);
+                    AudioClip randomVocal = SoundManager.Instance.GetRandomClip(SoundManager.Instance.m_tripleVocalClips);
                     PlaySound(randomVocal, 5f);
                 }
                 else if (m_gameBoard.m_completedRows >= 4)
                 {
-                    PlaySound(m_soundManager.m_tetrisVocalClip, 5f);
+                    PlaySound(SoundManager.Instance.m_tetrisVocalClip, 5f);
                 }
             }
         }
@@ -281,8 +281,8 @@ public class GameManager : MonoBehaviour
 
         StartCoroutine("GameOverRoutine");
 
-        PlaySound(m_soundManager.m_gameOverSound, 5f);
-        m_soundManager.StopMusic();
+        PlaySound(SoundManager.Instance.m_gameOverSound, 5f);
+        SoundManager.Instance.StopMusic();
     }
 
     IEnumerator GameOverRoutine()
@@ -310,9 +310,9 @@ public class GameManager : MonoBehaviour
 
     void PlaySound(AudioClip clip, float volMultiplier)
     {
-        if (clip && m_soundManager.m_fxEnabled)
+        if (clip && SoundManager.Instance.m_fxEnabled)
         {
-            AudioSource.PlayClipAtPoint(clip, Camera.main.transform.position, m_soundManager.m_fxVolume * volMultiplier);
+            AudioSource.PlayClipAtPoint(clip, Camera.main.transform.position, SoundManager.Instance.m_fxVolume * volMultiplier);
         }
     }
 
@@ -338,11 +338,8 @@ public class GameManager : MonoBehaviour
         {
             m_pausePanel.SetActive(m_isPaused);
 
-            if (m_soundManager)
-            {
-                // Play music quieter if paused
-                m_soundManager.m_musicSource.volume = (m_isPaused) ? m_soundManager.m_musicVolume = 0.25f : m_soundManager.m_musicVolume = 1f;
-            }
+            // Play music quieter if paused
+            SoundManager.Instance.m_musicSource.volume = (m_isPaused) ? SoundManager.Instance.m_musicVolume = 0.25f : SoundManager.Instance.m_musicVolume = 1f;
 
             // Stop time if paused
             Time.timeScale = (m_isPaused) ? 0f : 1f;
@@ -360,7 +357,7 @@ public class GameManager : MonoBehaviour
         {
             // Hold the shape
             m_holder.Catch(m_activeShape);
-            PlaySound(m_soundManager.m_holdSound, 1f);
+            PlaySound(SoundManager.Instance.m_holdSound, 1f);
             m_activeShape = m_spawner.SpawnShape();
         }
         else if (m_holder.m_canRelease)
@@ -370,12 +367,12 @@ public class GameManager : MonoBehaviour
             m_activeShape = m_holder.Release();
             m_activeShape.transform.position = m_spawner.transform.position;
             m_holder.Catch(temp);
-            PlaySound(m_soundManager.m_holdSound, 1f);
+            PlaySound(SoundManager.Instance.m_holdSound, 1f);
         }
         else
         {
             Debug.LogWarning("WARN: Wait for cooldown!");
-            PlaySound(m_soundManager.m_errorSound, 1f);
+            PlaySound(SoundManager.Instance.m_errorSound, 1f);
         }
 
         // New shape is spawning, so reset the ghost shape

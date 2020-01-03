@@ -29,17 +29,27 @@ public class SoundManager : MonoBehaviour
     public IconToggle m_musicIconToggle;
     public IconToggle m_fxIconToggle;
 
+    // Singleton pattern
+    static SoundManager _instance;
+    public static SoundManager Instance { get { return _instance; } }
+
+    void Awake()
+    {
+        if (_instance != null && _instance != this)
+        {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            _instance = this;
+        }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
         m_backgroundMusic = GetRandomClip(m_musicClips);
         PlayBackgroundMusic(m_backgroundMusic);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 
     public AudioClip GetRandomClip(AudioClip[] clips)

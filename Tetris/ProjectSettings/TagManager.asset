@@ -6,9 +6,7 @@ TagManager:
   tags:
   - Board
   - Spawner
-  - SoundManager
   - Fader
-  - ScoreManager
   - Ghost
   - Holder
   - LandShapeFx

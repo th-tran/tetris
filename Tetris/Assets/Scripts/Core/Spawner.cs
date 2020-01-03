@@ -44,7 +44,7 @@ public class Spawner : MonoBehaviour
         shape.transform.position = transform.position;
 
         // Enlarge the shape popped from queue as a visual effect
-        StartCoroutine(GrowShapeRoutine(shape, transform.position, 0.25f));
+        StartCoroutine(GrowShapeRoutine(shape, transform.position, 0.1f));
 
         // Spawn visual effect
         if (m_spawnFx)

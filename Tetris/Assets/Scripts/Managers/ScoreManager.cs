@@ -35,6 +35,22 @@ public class ScoreManager : MonoBehaviour
     // Used for particle effect on level up
     public ParticlePlayer m_levelUpFx;
 
+    // Singleton pattern
+    static ScoreManager _instance;
+    public static ScoreManager Instance { get { return _instance; } }
+
+    void Awake()
+    {
+        if (_instance != null && _instance != this)
+        {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            _instance = this;
+        }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
