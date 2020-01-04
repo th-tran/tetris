@@ -18,10 +18,18 @@ public class GameManager : MonoBehaviour
     float m_timeToDrop;
     float m_timeToNextKeyLeftRight;
     [Range(0.02f, 1f)]
-    public float m_keyRepeatRateLeftRight = 0.15f;
+    public float m_keyRepeatRateLeftRight = 0.3f;
     float m_timeToNextKeyDown;
     [Range(0.01f, 1f)]
     public float m_keyRepeatRateDown = 0.02f;
+
+    // Keep track of states
+    public bool m_movingRight = false;
+    public bool m_movingLeft = false;
+
+    // Scoring aspects related to player movement
+    const int m_softDropFactor = 1;
+    const int m_hardDropFactor = 2;
 
     //Controls game over state and effect
     bool m_gameOver = false;
@@ -35,7 +43,7 @@ public class GameManager : MonoBehaviour
     // Controls pausing
     public bool m_isPaused = false;
     bool m_canPause = true;
-    float m_introLength = 2.5f;
+    const float m_introLength = 2.5f;
     public GameObject m_pausePanel;
 
     // Singleton pattern
@@ -79,15 +87,6 @@ public class GameManager : MonoBehaviour
         {
             Debug.LogWarning("WARN: There is no spawner defined!");
         }
-        else
-        {
-            // Spawn the first shape
-            m_spawner.transform.position = Vector3Int.RoundToInt(m_spawner.transform.position);
-            if (m_activeShape == null)
-            {
-                m_activeShape = m_spawner.SpawnShape();
-            }
-        }
 
         if (m_gameOverPanel)
         {
@@ -99,7 +98,7 @@ public class GameManager : MonoBehaviour
             m_pausePanel.SetActive(false);
         }
 
-        StartCoroutine("PauseDelayRoutine");
+        StartCoroutine("IntroDelayRoutine");
     }
 
     // Update is called once per frame
@@ -119,50 +118,107 @@ public class GameManager : MonoBehaviour
 
     void LateUpdate()
     {
-        if (m_ghost)
+        if (m_ghost && m_activeShape)
         {
             m_ghost.DrawGhost(m_activeShape, m_gameBoard);
         }
     }
 
-    IEnumerator PauseDelayRoutine()
+    // Used to control behaviour of game while intro is playing
+    IEnumerator IntroDelayRoutine()
     {
+        // Disable pausing for length of intro
         m_canPause = false;
         yield return new WaitForSeconds(m_introLength);
+
+        // Spawn the first shape
+        m_spawner.transform.position = Vector3Int.RoundToInt(m_spawner.transform.position);
+        if (m_activeShape == null)
+        {
+            m_activeShape = m_spawner.SpawnShape();
+        }
+
+        // Re-enable pausing
         m_canPause = true;
     }
 
+    // Used to handle all player input during each frame
     void PlayerInput()
     {
+        // Player stops going right
+        bool case1 = Input.GetButtonUp("MoveRight");
+        // Player stops going left
+        bool case2 = Input.GetButtonUp("MoveLeft");
+        // Player is holding right and switches to left
+        bool case3 = (Input.GetButton("MoveRight") && Input.GetButtonDown("MoveLeft"));
+        // Player is holding left and switches to right
+        bool case4 = (Input.GetButton("MoveLeft") && Input.GetButtonDown("MoveRight"));
+        // Reset to base interval on left/right release or direction change
+        if (case1 || case2 || case3 || case4)
+        {
+            m_keyRepeatRateLeftRight = 0.3f;
+
+            if (case1)
+            {
+                m_movingRight = false;
+            }
+
+            if (case2)
+            {
+                m_movingLeft = false;
+            }
+
+            if (case3)
+            {
+                m_movingRight = false;
+                m_movingLeft = true;
+            }
+            else if (case4)
+            {
+                m_movingLeft = false;
+                m_movingRight = true;
+            }
+        }
+
         if ((Input.GetButton("MoveRight") && (Time.time > m_timeToNextKeyLeftRight)) || Input.GetButtonDown("MoveRight"))
         {
-            m_timeToNextKeyLeftRight = Time.time + m_keyRepeatRateLeftRight;
-            m_activeShape.MoveRight();
-            if (!m_gameBoard.IsValidPosition(m_activeShape))
+            if (!m_movingLeft)
             {
-                m_activeShape.MoveLeft();
-                PlaySound(SoundManager.Instance.m_errorSound, 0.5f);
-            }
-            else
-            {
-                PlaySound(SoundManager.Instance.m_moveSound, 0.5f);
-            }
-        }
-        else if ((Input.GetButton("MoveLeft") && (Time.time > m_timeToNextKeyLeftRight)) || Input.GetButtonDown("MoveLeft"))
-        {
-            m_timeToNextKeyLeftRight = Time.time + m_keyRepeatRateLeftRight;
-            m_activeShape.MoveLeft();
-            if (!m_gameBoard.IsValidPosition(m_activeShape))
-            {
+                m_keyRepeatRateLeftRight = Mathf.Clamp(m_keyRepeatRateLeftRight / 2, 0.05f, 0.15f);
+                m_timeToNextKeyLeftRight = Time.time + m_keyRepeatRateLeftRight;
                 m_activeShape.MoveRight();
-                PlaySound(SoundManager.Instance.m_errorSound, 0.5f);
-            }
-            else
-            {
-                PlaySound(SoundManager.Instance.m_moveSound, 0.5f);
+                if (!m_gameBoard.IsValidPosition(m_activeShape))
+                {
+                    m_activeShape.MoveLeft();
+                    PlaySound(SoundManager.Instance.m_errorSound, 0.5f);
+                }
+                else
+                {
+                    PlaySound(SoundManager.Instance.m_moveSound, 0.5f);
+                }
             }
         }
-        else if (Input.GetButtonDown("RotateRight") && m_activeShape.m_canRotate)
+
+        if ((Input.GetButton("MoveLeft") && (Time.time > m_timeToNextKeyLeftRight)) || Input.GetButtonDown("MoveLeft"))
+        {
+            if (!m_movingRight)
+            {
+                m_keyRepeatRateLeftRight = Mathf.Clamp(m_keyRepeatRateLeftRight / 2, 0.05f, 0.15f);
+                m_timeToNextKeyLeftRight = Time.time + m_keyRepeatRateLeftRight;
+                m_activeShape.MoveLeft();
+                if (!m_gameBoard.IsValidPosition(m_activeShape))
+                {
+                    m_activeShape.MoveRight();
+                    PlaySound(SoundManager.Instance.m_errorSound, 0.5f);
+                }
+                else
+                {
+                    PlaySound(SoundManager.Instance.m_moveSound, 0.5f);
+                }
+            }
+        }
+
+        if (Input.GetButtonDown("RotateRight") && m_activeShape.m_canRotate)
         {
             m_activeShape.RotateClockwise(m_clockwise);
             if (!m_gameBoard.IsValidPosition(m_activeShape))
@@ -188,6 +244,34 @@ public class GameManager : MonoBehaviour
                 PlaySound(SoundManager.Instance.m_rotateSound, 0.5f);
             }
         }
+        else if (Input.GetButtonDown("HardDrop"))
+        {
+            bool hitBottom = false;
+            int numRowsDropped = 0;
+            while (!hitBottom)
+            {
+                m_activeShape.MoveDown();
+                if (!m_gameBoard.IsValidPosition(m_activeShape))
+                {
+                    if (m_gameBoard.IsOverLimit(m_activeShape))
+                    {
+                        GameOver();
+                    }
+                    else
+                    {
+                        LandShape();
+                    }
+                    hitBottom = true;
+                }
+                else
+                {
+                    numRowsDropped++;
+                }
+            }
+
+            // Hard drop bonus
+            ScoreManager.Instance.AddScore(m_hardDropFactor * numRowsDropped);
+        }
         else if ((Input.GetButton("MoveDown") && (Time.time > m_timeToNextKeyDown)) || (Time.time > m_timeToDrop))
         {
             m_timeToNextKeyDown = Time.time + m_keyRepeatRateDown;
@@ -206,6 +290,12 @@ public class GameManager : MonoBehaviour
                     LandShape();
                 }
             }
+
+            // Soft drop score bonus
+            if (Input.GetButton("MoveDown"))
+            {
+                ScoreManager.Instance.AddScore(m_softDropFactor);
+            }
         }
         else if (Input.GetButtonDown("ToggleRotation"))
         {
@@ -221,6 +311,8 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    // Handles the logic and visual effects from landing a shape
+    // on the bottom of the grid.
     void LandShape()
     {
         if (m_activeShape)
@@ -287,6 +379,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    // Invokes game over sequence
     void GameOver()
     {
         m_activeShape.MoveUp();
@@ -314,6 +407,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    // Reload the current level
     public void Restart()
     {
         // Reload the active scene at normal speed
@@ -321,6 +415,7 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
+    // Play a one-shot audio of the given clip at the given volume
     void PlaySound(AudioClip clip, float volMultiplier)
     {
         if (clip && SoundManager.Instance.m_fxEnabled)
@@ -329,6 +424,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    // Reverses rotation direction
     public void ToggleRotationDir()
     {
         m_clockwise = !m_clockwise;
@@ -338,6 +434,8 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    // Brings up pause menu and pauses game if not paused,
+    // and vice versa.
     public void TogglePause()
     {
         if (m_gameOver)
@@ -359,6 +457,8 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    // Places the current active shape in the holder,
+    // or swaps the current active shape with the currently held shape.
     public void Hold()
     {
         if (!m_holder)

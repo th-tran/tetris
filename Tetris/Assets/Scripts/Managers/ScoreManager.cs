@@ -93,6 +93,13 @@ public class ScoreManager : MonoBehaviour
         UpdateUIText();
     }
 
+    // Add the given amount to score and update on screen
+    public void AddScore(int n)
+    {
+        m_score += n;
+        UpdateUIText();
+    }
+
     // Resets everything related to levels, lines and score to default
     public void Reset()
     {
