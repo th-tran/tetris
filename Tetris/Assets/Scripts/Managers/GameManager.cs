@@ -415,6 +415,12 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
+    // Quit the application
+    public void Quit()
+    {
+        Application.Quit();
+    }
+
     // Play a one-shot audio of the given clip at the given volume
     void PlaySound(AudioClip clip, float volMultiplier)
     {
