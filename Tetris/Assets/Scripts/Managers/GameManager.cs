@@ -18,7 +18,7 @@ public class GameManager : MonoBehaviour
     float m_timeToDrop;
     float m_timeToNextKeyLeftRight;
     [Range(0.02f, 1f)]
-    public float m_keyRepeatRateLeftRight = 0.3f;
+    public float m_keyRepeatRateLeftRight = 0.25f;
     float m_timeToNextKeyDown;
     [Range(0.01f, 1f)]
     public float m_keyRepeatRateDown = 0.02f;
@@ -113,7 +113,15 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        PlayerInput();
+        if (Input.GetButtonDown("Pause") && m_canPause)
+        {
+            TogglePause();
+        }
+
+        if (!m_isPaused)
+        {
+            PlayerInput();
+        }
     }
 
     void LateUpdate()
@@ -156,7 +164,7 @@ public class GameManager : MonoBehaviour
         // Reset to base interval on left/right release or direction change
         if (case1 || case2 || case3 || case4)
         {
-            m_keyRepeatRateLeftRight = 0.3f;
+            m_keyRepeatRateLeftRight = 0.25f;
 
             if (case1)
             {
@@ -300,10 +308,6 @@ public class GameManager : MonoBehaviour
         else if (Input.GetButtonDown("ToggleRotation"))
         {
             ToggleRotationDir();
-        }
-        else if (Input.GetButtonDown("Pause") && m_canPause)
-        {
-            TogglePause();
         }
         else if (Input.GetButtonDown("Hold"))
         {
