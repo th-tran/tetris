@@ -15,6 +15,8 @@ public class Spawner : MonoBehaviour
     // Used for particle effect when spawning a shape
     public ParticlePlayer m_spawnFx;
 
+    public bool m_busy = false;
+
     void Awake()
     {
         InitQueue();
@@ -45,6 +47,7 @@ public class Spawner : MonoBehaviour
 
         // Enlarge the shape popped from queue as a visual effect
         StartCoroutine(GrowShapeRoutine(shape, transform.position, 0.1f));
+        //shape.transform.localScale = Vector3.one;
 
         // Spawn visual effect
         if (m_spawnFx)
@@ -60,7 +63,6 @@ public class Spawner : MonoBehaviour
         {
             return null;
         }
-
     }
 
     // Clear and initialize the shape queue
@@ -115,6 +117,8 @@ public class Spawner : MonoBehaviour
     // Enlarges the shape from its current size to full size in the given time
     IEnumerator GrowShapeRoutine(Shape shape, Vector3 position, float growTime = 0.5f)
     {
+        m_busy = true;
+
         float size = 0f;
         growTime = Mathf.Clamp(growTime, 0.1f, 2f);
         float sizeDelta = Time.deltaTime / growTime;
@@ -128,5 +132,7 @@ public class Spawner : MonoBehaviour
         }
 
         shape.transform.localScale = Vector3.one;
+
+        m_busy = false;
     }
 }

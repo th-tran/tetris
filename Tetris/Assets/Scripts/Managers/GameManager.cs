@@ -254,31 +254,36 @@ public class GameManager : MonoBehaviour
         }
         else if (Input.GetButtonDown("HardDrop"))
         {
-            bool hitBottom = false;
-            int numRowsDropped = 0;
-            while (!hitBottom)
+            // Wait for shape to fully spawn
+            if (!m_spawner.m_busy)
             {
-                m_activeShape.MoveDown();
-                if (!m_gameBoard.IsValidPosition(m_activeShape))
+                bool hitBottom = false;
+                int numRowsDropped = 0;
+                while (!hitBottom)
                 {
-                    if (m_gameBoard.IsOverLimit(m_activeShape))
+                    m_activeShape.MoveDown();
+                    if (!m_gameBoard.IsValidPosition(m_activeShape))
                     {
-                        GameOver();
+                        hitBottom = true;
                     }
                     else
                     {
-                        LandShape();
+                        numRowsDropped++;
                     }
-                    hitBottom = true;
+                }
+
+                if (m_gameBoard.IsOverLimit(m_activeShape))
+                {
+                    GameOver();
                 }
                 else
                 {
-                    numRowsDropped++;
+                    LandShape();
                 }
-            }
 
-            // Hard drop bonus
-            ScoreManager.Instance.AddScore(m_hardDropFactor * numRowsDropped);
+                // Hard drop bonus
+                ScoreManager.Instance.AddScore(m_hardDropFactor * numRowsDropped);
+            }
         }
         else if ((Input.GetButton("MoveDown") && (Time.time > m_timeToNextKeyDown)) || (Time.time > m_timeToDrop))
         {
