@@ -23,9 +23,9 @@ public class GameManager : MonoBehaviour
     [Range(0.01f, 1f)]
     public float m_keyRepeatRateDown = 0.02f;
 
-    // Keep track of states
-    public bool m_movingRight = false;
-    public bool m_movingLeft = false;
+    // Keep track of player movement states
+    bool m_movingRight = false;
+    bool m_movingLeft = false;
 
     // Scoring aspects related to player movement
     const int m_softDropFactor = 1;
@@ -43,7 +43,7 @@ public class GameManager : MonoBehaviour
     // Controls pausing
     public bool m_isPaused = false;
     bool m_canPause = true;
-    const float m_introLength = 2.5f;
+    const float m_introLength = 2.4f;
     public GameObject m_pausePanel;
 
     // Singleton pattern
