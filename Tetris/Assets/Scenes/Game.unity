@@ -2013,6 +2013,7 @@ MonoBehaviour:
   - {fileID: 402500941}
   - {fileID: 1104518294}
   m_spawnFx: {fileID: 570914548}
+  m_busy: 0
 --- !u!4 &482180496
 Transform:
   m_ObjectHideFlags: 0
@@ -2098,6 +2099,7 @@ GameObject:
   - component: {fileID: 519420032}
   - component: {fileID: 519420031}
   - component: {fileID: 519420029}
+  - component: {fileID: 519420030}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -2113,6 +2115,22 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_Enabled: 1
+--- !u!114 &519420030
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519420028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bef15c89a4b7c4041a6d53a8ee51f1ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_width: 405
+  m_height: 720
+  m_isFullScreen: 0
+  m_refreshRate: 60
 --- !u!20 &519420031
 Camera:
   m_ObjectHideFlags: 0
@@ -7606,8 +7624,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_keyRepeatRateLeftRight: 0.3
   m_keyRepeatRateDown: 0.02
-  m_movingRight: 0
-  m_movingLeft: 0
   m_gameOverPanel: {fileID: 1177390560}
   m_gameOverFx: {fileID: 1142435746}
   m_rotIconToggle: {fileID: 1718199234212087190}
