@@ -252,38 +252,34 @@ public class GameManager : MonoBehaviour
                 PlaySound(SoundManager.Instance.m_rotateSound, 0.5f);
             }
         }
-        else if (Input.GetButtonDown("HardDrop"))
+        else if (Input.GetButtonDown("HardDrop") && !m_spawner.m_busy)
         {
-            // Wait for shape to fully spawn
-            if (!m_spawner.m_busy)
+            bool hitBottom = false;
+            int numRowsDropped = 0;
+            while (!hitBottom)
             {
-                bool hitBottom = false;
-                int numRowsDropped = 0;
-                while (!hitBottom)
+                m_activeShape.MoveDown();
+                if (!m_gameBoard.IsValidPosition(m_activeShape))
                 {
-                    m_activeShape.MoveDown();
-                    if (!m_gameBoard.IsValidPosition(m_activeShape))
-                    {
-                        hitBottom = true;
-                    }
-                    else
-                    {
-                        numRowsDropped++;
-                    }
-                }
-
-                if (m_gameBoard.IsOverLimit(m_activeShape))
-                {
-                    GameOver();
+                    hitBottom = true;
                 }
                 else
                 {
-                    LandShape();
+                    numRowsDropped++;
                 }
-
-                // Hard drop bonus
-                ScoreManager.Instance.AddScore(m_hardDropFactor * numRowsDropped);
             }
+
+            if (m_gameBoard.IsOverLimit(m_activeShape))
+            {
+                GameOver();
+            }
+            else
+            {
+                LandShape();
+            }
+
+            // Hard drop bonus
+            ScoreManager.Instance.AddScore(m_hardDropFactor * numRowsDropped);
         }
         else if ((Input.GetButton("MoveDown") && (Time.time > m_timeToNextKeyDown)) || (Time.time > m_timeToDrop))
         {
@@ -314,7 +310,7 @@ public class GameManager : MonoBehaviour
         {
             ToggleRotationDir();
         }
-        else if (Input.GetButtonDown("Hold"))
+        else if (Input.GetButtonDown("Hold") && !m_spawner.m_busy)
         {
             Hold();
         }
