@@ -13,6 +13,7 @@ public class Shape : MonoBehaviour
     // Used for particle effects on landing a shape
     GameObject[] m_glowSquareFx;
     public string glowSquareTag = "LandShapeFx";
+    Color m_shapeColor;
 
     // Start is called before the first frame update
     void Start()
@@ -23,6 +24,8 @@ public class Shape : MonoBehaviour
         {
             m_glowSquareFx = GameObject.FindGameObjectsWithTag(glowSquareTag);
         }
+
+        m_shapeColor = GetComponentInChildren<SpriteRenderer>().color;
     }
 
     // Plays the particle effects from landing a shape
@@ -38,6 +41,9 @@ public class Shape : MonoBehaviour
             {
                 m_glowSquareFx[i].transform.position = new Vector3(child.position.x, child.position.y, -2f);
                 ParticlePlayer particlePlayer = m_glowSquareFx[i].GetComponent<ParticlePlayer>();
+                ParticleColor particleColor = particlePlayer.GetComponentInChildren<ParticleColor>();
+                particleColor.ChangeColor(m_shapeColor);
+
                 if (particlePlayer)
                 {
                     particlePlayer.Play();
