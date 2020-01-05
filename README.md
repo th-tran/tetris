@@ -64,3 +64,24 @@ I set off the fireworks to really bring the game to life and start the year off 
 *Other:*
 - Added several particle effects that play on certain events in the game (e.g. landing a shape, clearing a line, leveling up, etc.)
 - Added some persistent particle effects that play in the background and give the sense of constant motion
+
+---
+
+### 2020-01-05
+
+The first proper build is ready!
+
+*Functional:*
+- Fixed some bugs pertaining to making player inputs that spawn a new shape while the current shape is still spawning
+- Added some utility scripts related to gameplay (SetStartupResolution, ParticleColor)
+
+*Other:*
+- Added the first build of the game, ready to install and play from the `Tetris_Setup` folder
+
+Things to add in the future:
+- Proper menu / in-game settings (change input controls, block style, enable/disable particles, etc)
+- Optimization (namely object pooling for Shapes to avoid garbage collection)
+- Extra gameplay features
+  - Advanced tetris mechanics (wallkick, SRS rotation, etc)
+  - Stages with varying challenges (garbage blocks, etc)
+  - Battle against AI / local multiplayer
